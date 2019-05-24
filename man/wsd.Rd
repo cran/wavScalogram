@@ -11,7 +11,8 @@ wsd(signal1,
            windowrad = NULL,
            rdist = NULL,
            delta_t = NULL,
-           normalize = FALSE,
+           normalize = c("NO", "ENERGY", "MAX", "SCALE"),
+           refscale = NULL,
            wname = c("MORLET", "DOG", "PAUL", "HAAR", "HAAR2"),
            wparam = NULL,
            waverad = NULL,
@@ -24,7 +25,10 @@ wsd(signal1,
            parallel = FALSE,
            makefigure = TRUE,
            time_values = NULL,
-           figureperiod = TRUE)
+           figureperiod = TRUE,
+           xlab = "Time",
+           ylab = NULL,
+           main = "-log2(WSD)")
 }
 \arguments{
 \item{signal1}{A vector containing the first signal.}
@@ -39,7 +43,7 @@ and the number of suboctaves per octave for constructing power 2 scales (followi
 Torrence and Compo 1998). If NULL, they are automatically computed.}
 
 \item{windowrad}{Integer. Time radius for the windows, measured in \code{dt}. By
-default, it is set to \eqn{celing(length(signal1) / 20)}.}
+default, it is set to \eqn{ceiling(length(signal1) / 20)}.}
 
 \item{rdist}{Integer. Log-scale radius for the windows measured in suboctaves. By
 default, it is set to \eqn{ceiling(length(scales) / 20)}.}
@@ -48,7 +52,13 @@ default, it is set to \eqn{ceiling(length(scales) / 20)}.}
 times, measured in \code{dt}. By default, it is set to
 \eqn{ceiling(length(signal1) / 256)}.}
 
-\item{normalize}{Logical. Set to TRUE if the signals use different units.}
+\item{normalize}{String, equal to "NO", "ENERGY", "MAX" or "SCALE". If "ENERGY", signals are
+divided by their respective energies. If "MAX", each signal is divided by the maximum
+value attained by its scalogram. In these two cases, \code{energy_density} must be TRUE.
+Finally, if "SCALE", each signal is divided by their scalogram value at scale
+\code{refscale}.}
+
+\item{refscale}{Numeric. The reference scale for \code{normalize}.}
 
 \item{wname}{A string, equal to "MORLET", "DOG", "PAUL", "HAAR" or "HAAR2". The
 difference between "HAAR" and "HAAR2" is that "HAAR2" is more accurate but slower.}
@@ -57,8 +67,8 @@ difference between "HAAR" and "HAAR2" is that "HAAR2" is more accurate but slowe
 (Morlet, DoG or Paul).}
 
 \item{waverad}{Numeric. The radius of the wavelet used in the computations for the cone
-of influence. If it is not specified, it is computed by \code{wavelet_radius} for DoG
-and Paul wavelets. For Haar and Morlet it is assumed to be 1 and 3 respectively.}
+of influence. If it is not specified, it is asumed to be \eqn{\sqrt{2}} for Morlet and DoG,
+\eqn{1/\sqrt{2}} for Paul and 0.5 for Haar.}
 
 \item{border_effects}{String, equal to "BE", "INNER", "PER" or "SYM",
 which indicates how to manage the border effects which arise usually when a convolution
@@ -98,16 +108,17 @@ even divisions by zero.
   (\eqn{= 1}) or mix (in \eqn{(0,1)}) difference between scalograms. Default value is
   set to \eqn{0.02}.}
 
-\item{compensation}{Numeric in \eqn{[0,1]}. It is an alternative to \code{wscnoise} for
+\item{compensation}{Numeric. It is an alternative to \code{wscnoise} for
 preventing numerical errors or non-relevant high relative differences when scalogram
-values are close to zero (see Bolós et al. 2017).}
+values are close to zero (see Bolós et al. 2017). It should be a non-negative
+relatively small value.}
 
 \item{energy_density}{Logical. If TRUE (default), divide the scalograms by the square
 root of the scales for convert them into energy density. Note that it does not affect
 the results if \code{wscnoise} \eqn{= 0}.}
 
-\item{parallel}{Logical. If TRUE (default) uses function \code{parApply} from package
-\code{parallel} for the Montecarlo simulations. When FALSE it uses the normal
+\item{parallel}{Logical. If TRUE, it uses function \code{parApply} from package
+\code{parallel} for the Montecarlo simulations. When FALSE (default) it uses the normal
 \code{apply} function.}
 
 \item{makefigure}{Logical. If TRUE (default), a figure with the WSD is plotted.}
@@ -117,6 +128,13 @@ time values for the figure. If NULL (default), it will be computed starting at 0
 
 \item{figureperiod}{Logical. If TRUE (default), periods are used in the figure instead
 of scales.}
+
+\item{xlab}{A string giving a custom X axis label.}
+
+\item{ylab}{A string giving a custom Y axis label. If NULL (default) the Y label is
+either "Scale" or "Period" depending on the value of \code{figureperiod}.}
+
+\item{main}{A string giving a custom main title for the figure.}
 }
 \value{
 A list with the following fields:
@@ -136,7 +154,7 @@ the 95\% significance.
 \item \code{signif05}: A logical matrix of size \code{length(tcentral)} x
 \code{length(scales)}. If TRUE, the corresponding point of the \code{wsd} matrix is in
 the 5\% significance.
-\item \code{fourier_factor}: A factor for converting scales to periods.
+\item \code{fourierfactor}: A factor for converting scales into periods.
 \item \code{coi_maxscale}: A vector of length \code{length(tcentral)} containing the
 values of the maximum scale from which there are border effects for the respective
 central time.
