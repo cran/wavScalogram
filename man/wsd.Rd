@@ -28,7 +28,8 @@ wsd(signal1,
            figureperiod = TRUE,
            xlab = "Time",
            ylab = NULL,
-           main = "-log2(WSD)")
+           main = "-log2(WSD)",
+           zlim = NULL)
 }
 \arguments{
 \item{signal1}{A vector containing the first signal.}
@@ -40,7 +41,7 @@ that of \code{signal1}).}
 
 \item{scaleparam}{A vector of three elements with the minimum scale, the maximum scale
 and the number of suboctaves per octave for constructing power 2 scales (following
-Torrence and Compo 1998). If NULL, they are automatically computed.}
+Torrence and Compo 1998). If NULL, they are automatically constructed.}
 
 \item{windowrad}{Integer. Time radius for the windows, measured in \code{dt}. By
 default, it is set to \eqn{ceiling(length(signal1) / 20)}.}
@@ -135,6 +136,8 @@ of scales.}
 either "Scale" or "Period" depending on the value of \code{figureperiod}.}
 
 \item{main}{A string giving a custom main title for the figure.}
+
+\item{zlim}{A vector of length 2 with the limits for the z-axis (the color bar).}
 }
 \value{
 A list with the following fields:

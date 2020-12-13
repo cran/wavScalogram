@@ -27,7 +27,8 @@
 #'            figureperiod = TRUE,
 #'            xlab = "Time",
 #'            ylab = NULL,
-#'            main = "-log2(WSD)")
+#'            main = "-log2(WSD)",
+#'            zlim = NULL)
 #'
 #' @param signal1 A vector containing the first signal.
 #' @param signal2 A vector containing the second signal (its length should be equal to
@@ -35,7 +36,7 @@
 #' @param dt Numeric. The time step of the signals.
 #' @param scaleparam A vector of three elements with the minimum scale, the maximum scale
 #' and the number of suboctaves per octave for constructing power 2 scales (following
-#' Torrence and Compo 1998). If NULL, they are automatically computed.
+#' Torrence and Compo 1998). If NULL, they are automatically constructed.
 #' @param windowrad Integer. Time radius for the windows, measured in \code{dt}. By
 #' default, it is set to \eqn{ceiling(length(signal1) / 20)}.
 #' @param rdist Integer. Log-scale radius for the windows measured in suboctaves. By
@@ -109,6 +110,7 @@
 #' @param ylab A string giving a custom Y axis label. If NULL (default) the Y label is
 #' either "Scale" or "Period" depending on the value of \code{figureperiod}.
 #' @param main A string giving a custom main title for the figure.
+#' @param zlim A vector of length 2 with the limits for the z-axis (the color bar).
 #'
 #' @importFrom parallel parApply detectCores makeCluster stopCluster
 #' @importFrom abind abind
@@ -183,7 +185,8 @@ wsd <-
            figureperiod = TRUE,
            xlab = "Time",
            ylab = NULL,
-           main = "-log2(WSD)") {
+           main = "-log2(WSD)",
+           zlim = NULL) {
 
   #  require(abind)
 
@@ -482,7 +485,8 @@ wsd <-
           warning("Invalid length of time_values vector. Changing to default.")
           X <- tcentraldt
         } else {
-          X <- time_values[floor(tcentraldt / dt)]
+          aux <- floor((nt - (nwsc - 1) * delta_t + 1) / 2)
+          X <- time_values[seq(from = aux, to = aux + (nwsc - 1) * delta_t, by = delta_t)]
         }
       }
 
@@ -497,7 +501,8 @@ wsd <-
         sig05 = wsdsig05,
         Xname = xlab,
         Yname = ylab,
-        Zname = main
+        Zname = main,
+        zlim = zlim
       )
 
     }

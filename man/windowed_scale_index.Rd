@@ -4,7 +4,9 @@
 \alias{windowed_scale_index}
 \title{Windowed scale index}
 \usage{
-windowed_scale_index(signal,
+windowed_scale_index(signal = NULL,
+                            wsc = NULL,
+                            wsc_coi = NULL,
                             dt = 1,
                             scales = NULL,
                             powerscales = TRUE,
@@ -18,27 +20,50 @@ windowed_scale_index(signal,
                             makefigure = TRUE,
                             time_values = NULL,
                             figureperiod = TRUE,
+                            plot_wsc = FALSE,
                             xlab = "Time",
                             ylab = NULL,
-                            main = "Windowed Scale Index")
+                            main = "Windowed Scale Index",
+                            zlim = NULL)
 }
 \arguments{
 \item{signal}{A vector containing the signal whose windowed scale indices are wanted.}
 
+\item{wsc}{A matrix containing the windowed scalograms from which the windowed scale
+indices are going to be computed (number of times x number of scales, as it is returned
+by the \code{windowed_scalogram} function). If \code{wsc} is not \code{NULL}, then
+\code{signal}, \code{windowrad}, \code{delta_t}, \code{waverad} and
+\code{border_effects} are not necessary and they are ignored.}
+
+\item{wsc_coi}{A vector of length \code{nrow(wsc)} (i.e. number of times) containing
+the values of the maximum scale at each time from which there are border effects in the
+windowed scalogram \code{wsc}. If \code{wsc} is \code{NULL}, then \code{wsc_coi} is not
+necessary and it is ignored.}
+
 \item{dt}{Numeric. The time step of the signal.}
 
 \item{scales}{A vector containing the wavelet scales at wich the windowed scalograms
-are computed. This can be either a vector with all the scales, or (if
-\code{powerscales} is TRUE) following Torrence and Compo 1998, a vector of three
-elements with the minimum scale, the maximum scale and the number of suboctaves per
-octave. If NULL, they are automatically computed.}
+are computed. This can be either a vector with all the scales or, following Torrence
+and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
+the number of suboctaves per octave. In the first case, \code{powerscales} must be
+\code{FALSE} if the given scales are not power 2 scales. In the second case,
+\code{powerscales} must be \code{TRUE} in order to construct power 2 scales using a
+base 2 logarithmic scale). If \code{scales} is NULL, they are automatically constructed.}
 
-\item{powerscales}{Logical. If TRUE (default), construct power 2 scales from
-\code{scales}. If \code{scales} is NULL, they are automatically computed.}
+\item{powerscales}{Logical. It must be TRUE (default) only in these cases:
+\itemize{
+\item If \code{scales} are power 2 scales, i.e. they use a base 2 logarithmic scale.
+\item If we want to construct power 2 scales automatically. In this case, \code{scales}
+must be \code{NULL}.
+\item If we want to construct power 2 scales from \code{scales}. In this case,
+\code{length(scales)} must be 3.
+}
+Otherwise, it must be \code{FALSE}.}
 
 \item{s1}{A vector containing the scales \eqn{s_1}. The windowed scale indices are
 computed in the intervals \eqn{[s_0,s_1]}, where \eqn{s_0} is the minimum scale in
-\code{scales}.}
+\code{scales}. If \code{s1} are not power 2 scales, then \code{scales} should not be
+power 2 scales either and hence, \code{powerscales} must be \code{FALSE}.}
 
 \item{windowrad}{Integer. Time radius for the windows, measured in dt. By default,
 it is set to \eqn{ceiling(length(signal) / 20)}.}
@@ -79,6 +104,9 @@ time values for the figure. If NULL (default), it will be computed starting at 0
 \item{figureperiod}{Logical. If TRUE (default), periods are used in the figure instead
 of scales.}
 
+\item{plot_wsc}{Logical. If TRUE, it plots the windowed scalograms from which the
+windowed scale indices are computed.}
+
 \item{xlab}{A string giving a custom X axis label.}
 
 \item{ylab}{A string giving a custom Y axis label. If NULL (default) the Y label is
@@ -86,6 +114,8 @@ either "s1" or "Period of s1" depending on the value of \code{figureperiod} if
 \code{length(s1) > 1}, or "Windowed Scale Index" if \code{length(s1) == 1}.}
 
 \item{main}{A string giving a custom main title for the figure.}
+
+\item{zlim}{A vector of length 2 with the limits for the z-axis (the color bar).}
 }
 \value{
 A list with the following fields:
@@ -98,6 +128,8 @@ containing the values of the corresponding windowed scale indices.
 containing the scales \eqn{s_{max}}.
 \item \code{smin}: A matrix of size \code{length(tcentral)} x \code{length(s1)}
 containing the scales \eqn{s_{min}}.
+\item \code{wsc}: A matrix of size \code{length(tcentral)} x \code{length(scales)}
+containing the windowed scalograms from which the windowed scale indices are computed.
 \item \code{scalog_smax}: A matrix of size \code{length(tcentral)} x \code{length(s1)}
 containing the values of the corresponding scalograms at scales \eqn{s_{max}}.
 \item \code{scalog_smin}: A matrix of size \code{length(tcentral)} x \code{length(s1)}
@@ -107,7 +139,7 @@ containing the values of the corresponding scalograms at scales \eqn{s_{min}}.
 \item \code{windowrad}: Radius for the time windows, measured in \code{dt}.
 \item \code{fourierfactor}: A factor for converting scales into periods.
 \item \code{coi_maxscale}: A vector of length \code{length(tcentral)} containing the
-values of the maximum scale from which there are border effects.
+values of the maximum scale at each time from which there are border effects.
 }
 }
 \description{
@@ -134,6 +166,7 @@ non-periodicity. Comput. Math. Appl. 60 (2010), no. 3, 634-641.
 }
 
 \examples{
+
 dt <- 0.1
 time <- seq(0, 50, dt)
 signal <- c(sin(pi * time), sin(pi * time / 2))
@@ -141,5 +174,16 @@ signal <- c(sin(pi * time), sin(pi * time / 2))
 wsi_full <- windowed_scale_index(signal = signal, dt = dt, figureperiod = FALSE)
 # Next, we choose a meaningful s1 value, greater than all relevant scales.
 wsi <- windowed_scale_index(signal = signal, dt = dt, s1 = 4, figureperiod = FALSE)
+
+# Another way, giving the windowed scalograms instead of the signal:
+
+wsc <- windowed_scalogram(signal = signal, dt = dt, figureperiod = FALSE,
+                          energy_density = FALSE, makefigure = FALSE)
+wsi_full <- windowed_scale_index(wsc = wsc$wsc, wsc_coi = wsc$coi_maxscale,
+                                 scales = wsc$scales, time_values = wsc$tcentral,
+                                 figureperiod = FALSE)
+wsi <- windowed_scale_index(wsc = wsc$wsc, wsc_coi = wsc$coi_maxscale,
+                            scales = wsc$scales, s1 = 4, time_values = wsc$tcentral,
+                            figureperiod = FALSE)
 
 }

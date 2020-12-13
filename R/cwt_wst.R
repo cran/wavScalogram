@@ -24,17 +24,25 @@
 #'                figureperiod = TRUE,
 #'                xlab = "Time",
 #'                ylab = NULL,
-#'                main = NULL)
+#'                main = NULL,
+#'                zlim = NULL)
 #'
 #' @param signal A vector containing the signal whose wavelet transform is wanted.
 #' @param dt Numeric. The time step of the signal.
-#' @param scales A vector containing the wavelet scales at wich the CWT is computed. This
-#' can be either a vector with all the scales, or (if \code{powerscales} is TRUE)
-#' following Torrence and Compo 1998, a vector of three elements with the minimum scale,
-#' the maximum scale and the number of suboctaves per octave. If NULL, they are
-#' automatically computed.
-#' @param powerscales Logical. If TRUE (default), construct power 2 scales from
-#' \code{scales}. If \code{scales} is NULL, they are automatically computed.
+#' @param scales A vector containing the wavelet scales at wich the CWT
+#' is computed. This can be either a vector with all the scales or, following Torrence
+#' and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
+#' the number of suboctaves per octave (in this case, \code{powerscales} must be TRUE in
+#' order to construct power 2 scales using a base 2 logarithmic scale). If \code{scales}
+#' is NULL, they are automatically constructed.
+#' @param powerscales Logical. It must be TRUE (default) in these cases:
+#' \itemize{
+#' \item If \code{scales} are power 2 scales, i.e. they use a base 2 logarithmic scale.
+#' \item If we want to construct power 2 scales automatically. In this case, \code{scales}
+#' must be \code{NULL}.
+#' \item If we want to construct power 2 scales from \code{scales}. In this case,
+#' \code{length(scales)} must be 3.
+#' }
 #' @param wname A string, equal to "MORLET", "DOG", "PAUL", "HAAR" or "HAAR2". The
 #' difference between "HAAR" and "HAAR2" is that "HAAR2" is more accurate but slower.
 #' @param wparam The corresponding nondimensional parameter for the wavelet function
@@ -64,6 +72,7 @@
 #' @param main A string giving a custom main title for the figure. If NULL
 #' (default) the main title is either "Wavelet Power Spectrum / Scales" or "Wavelet Power
 #' Spectrum" depending on the value of \code{energy_density}.
+#' @param zlim A vector of length 2 with the limits for the z-axis (the color bar).
 #'
 #' @return A list with the following fields:
 #' \itemize{
@@ -104,7 +113,8 @@ cwt_wst <-
            figureperiod = TRUE,
            xlab = "Time",
            ylab = NULL,
-           main = NULL
+           main = NULL,
+           zlim = NULL
            ) {
 
   wname <- toupper(wname)
@@ -137,17 +147,17 @@ cwt_wst <-
     }
     scalesdt <- scales * dt
   } else {
-    ns <- length(scales)
-    if (powerscales && ns == 3) {
+    if (powerscales && length(scales) == 3) {
       scales <- pow2scales(scales)
     } else {
-      if (powerscales && ns != 3) {
-        warning("The length of scales is not 3. Powerscales set to FALSE.")
-        powerscales <- FALSE
-      }
       if (is.unsorted(scales)) {
         warning("Scales were not sorted.")
         scales <- sort(scales)
+      }
+      aux <- diff(log2(scales))
+      if (powerscales && ((max(aux) - min(aux)) / max(aux) > 0.05)) {
+        warning("Scales seem like they are not power 2 scales. Powerscales set to FALSE.")
+        powerscales <- FALSE
       }
     }
     scalesdt <- scales
@@ -344,7 +354,8 @@ cwt_wst <-
         coi = coi,
         Xname = xlab,
         Yname = ylab,
-        Zname = main
+        Zname = main,
+        zlim = zlim
       )
     } else {
       if (is.null(ylab_aux)) {

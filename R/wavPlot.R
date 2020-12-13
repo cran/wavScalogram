@@ -9,6 +9,7 @@
 #'                Y = NULL,
 #'                Ylog = FALSE,
 #'                Yrev = TRUE,
+#'                zlim = NULL,
 #'                coi = NULL,
 #'                rdist = NULL,
 #'                sig95 = NULL,
@@ -22,6 +23,7 @@
 #' @param Y A vector with y-coordinates (scales).
 #' @param Ylog Logical. Considers logarithmic scale for the y-axis.
 #' @param Yrev Logical. Considers reverse the y-axis.
+#' @param zlim A vector of length 2 with the limits for the z-axis (the color bar).
 #' @param coi A vector of size \code{length(X)} with the y-coordinates of the frontier of
 #' the cone of influence.
 #' @param rdist Numeric. Only for WSD plots, margin in the y-axis where appear border
@@ -65,6 +67,7 @@ wavPlot <-
            Y = NULL,
            Ylog = FALSE,
            Yrev = TRUE,
+           zlim = NULL,
            coi = NULL,
            rdist = NULL,
            sig95 = NULL,
@@ -123,7 +126,8 @@ wavPlot <-
     xlab = Xname,
     ylab = Yname,
     main = Zname,
-    ylim = c(YY[1], YY[Ylen])
+    ylim = c(YY[1], YY[Ylen]),
+    zlim = zlim
     )
 
   # Axis ticks and labels

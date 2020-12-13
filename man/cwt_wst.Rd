@@ -18,21 +18,29 @@ cwt_wst(signal,
                figureperiod = TRUE,
                xlab = "Time",
                ylab = NULL,
-               main = NULL)
+               main = NULL,
+               zlim = NULL)
 }
 \arguments{
 \item{signal}{A vector containing the signal whose wavelet transform is wanted.}
 
 \item{dt}{Numeric. The time step of the signal.}
 
-\item{scales}{A vector containing the wavelet scales at wich the CWT is computed. This
-can be either a vector with all the scales, or (if \code{powerscales} is TRUE)
-following Torrence and Compo 1998, a vector of three elements with the minimum scale,
-the maximum scale and the number of suboctaves per octave. If NULL, they are
-automatically computed.}
+\item{scales}{A vector containing the wavelet scales at wich the CWT
+is computed. This can be either a vector with all the scales or, following Torrence
+and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
+the number of suboctaves per octave (in this case, \code{powerscales} must be TRUE in
+order to construct power 2 scales using a base 2 logarithmic scale). If \code{scales}
+is NULL, they are automatically constructed.}
 
-\item{powerscales}{Logical. If TRUE (default), construct power 2 scales from
-\code{scales}. If \code{scales} is NULL, they are automatically computed.}
+\item{powerscales}{Logical. It must be TRUE (default) in these cases:
+\itemize{
+\item If \code{scales} are power 2 scales, i.e. they use a base 2 logarithmic scale.
+\item If we want to construct power 2 scales automatically. In this case, \code{scales}
+must be \code{NULL}.
+\item If we want to construct power 2 scales from \code{scales}. In this case,
+\code{length(scales)} must be 3.
+}}
 
 \item{wname}{A string, equal to "MORLET", "DOG", "PAUL", "HAAR" or "HAAR2". The
 difference between "HAAR" and "HAAR2" is that "HAAR2" is more accurate but slower.}
@@ -73,6 +81,8 @@ either "Scale" or "Period" depending on the value of \code{figureperiod}.}
 \item{main}{A string giving a custom main title for the figure. If NULL
 (default) the main title is either "Wavelet Power Spectrum / Scales" or "Wavelet Power
 Spectrum" depending on the value of \code{energy_density}.}
+
+\item{zlim}{A vector of length 2 with the limits for the z-axis (the color bar).}
 }
 \value{
 A list with the following fields:

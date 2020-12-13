@@ -9,6 +9,7 @@ wavPlot(Z,
                Y = NULL,
                Ylog = FALSE,
                Yrev = TRUE,
+               zlim = NULL,
                coi = NULL,
                rdist = NULL,
                sig95 = NULL,
@@ -27,6 +28,8 @@ wavPlot(Z,
 \item{Ylog}{Logical. Considers logarithmic scale for the y-axis.}
 
 \item{Yrev}{Logical. Considers reverse the y-axis.}
+
+\item{zlim}{A vector of length 2 with the limits for the z-axis (the color bar).}
 
 \item{coi}{A vector of size \code{length(X)} with the y-coordinates of the frontier of
 the cone of influence.}
@@ -55,7 +58,7 @@ differences, wavelet coherences and windowed scale indices.
 
 nt <- 1500
 time <- 1:nt
-sd_noise <-  0.2 #\% In Bolós et al. 2017 Figure 1, sd_noise = 1.
+sd_noise <-  0.2 #\% In BolÃ³s et al. 2017 Figure 1, sd_noise = 1.
 signal1 <- rnorm(n = nt, mean = 0, sd = sd_noise) + sin(time / 10)
 signal2 <- rnorm(n = nt, mean = 0, sd = sd_noise) + sin(time / 10)
 signal2[500:1000] = signal2[500:1000] + sin((500:1000) / 2)

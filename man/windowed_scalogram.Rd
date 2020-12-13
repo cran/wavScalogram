@@ -20,21 +20,31 @@ windowed_scalogram(signal,
                           figureperiod = TRUE,
                           xlab = "Time",
                           ylab = NULL,
-                          main = "Windowed Scalogram")
+                          main = "Windowed Scalogram",
+                          zlim = NULL)
 }
 \arguments{
 \item{signal}{A vector containing the signal whose windowed scalogram is wanted.}
 
 \item{dt}{Numeric. The time step of the signal.}
 
-\item{scales}{A vector containing the wavelet scales at wich
-the windowed scalogram is computed. This can be either a vector with all the scales, or
-(if \code{powerscales} is TRUE) following Torrence and Compo 1998, a vector of three
-elements with the minimum scale, the maximum scale and the number of suboctaves per
-octave. If NULL, they are automatically computed.}
+\item{scales}{A vector containing the wavelet scales at wich the windowed scalograms
+are computed. This can be either a vector with all the scales or, following Torrence
+and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
+the number of suboctaves per octave. In the first case, \code{powerscales} must be
+\code{FALSE} if the given scales are not power 2 scales. In the second case,
+\code{powerscales} must be \code{TRUE} in order to construct power 2 scales using a
+base 2 logarithmic scale). If \code{scales} is NULL, they are automatically constructed.}
 
-\item{powerscales}{Logical. If TRUE (default), construct power 2 scales from
-\code{scales}. If \code{scales} is NULL, they are automatically computed.}
+\item{powerscales}{Logical. It must be TRUE (default) only in these cases:
+\itemize{
+\item If \code{scales} are power 2 scales, i.e. they use a base 2 logarithmic scale.
+\item If we want to construct power 2 scales automatically. In this case, \code{scales}
+must be \code{NULL}.
+\item If we want to construct power 2 scales from \code{scales}. In this case,
+\code{length(scales)} must be 3.
+}
+Otherwise, it must be \code{FALSE}.}
 
 \item{windowrad}{Integer. Time radius for the windows, measured in \code{dt}. By
 default, it is set to \eqn{ceiling(length(signal) / 20)}.}
@@ -86,6 +96,8 @@ either "Scale" or "Period" depending on the value of \code{figureperiod} if
 \code{length(scales) > 1}, or "Windowed Scalogram" if \code{length(scales) == 1}.}
 
 \item{main}{A string giving a custom main title for the figure.}
+
+\item{zlim}{A vector of length 2 with the limits for the z-axis (the color bar).}
 }
 \value{
 A list with the following fields:

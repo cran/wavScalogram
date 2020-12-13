@@ -33,17 +33,27 @@
 #'                           figureperiod = TRUE,
 #'                           xlab = "Time",
 #'                           ylab = NULL,
-#'                           main = "Windowed Scalogram")
+#'                           main = "Windowed Scalogram",
+#'                           zlim = NULL)
 #'
 #' @param signal A vector containing the signal whose windowed scalogram is wanted.
 #' @param dt Numeric. The time step of the signal.
-#' @param scales A vector containing the wavelet scales at wich
-#' the windowed scalogram is computed. This can be either a vector with all the scales, or
-#' (if \code{powerscales} is TRUE) following Torrence and Compo 1998, a vector of three
-#' elements with the minimum scale, the maximum scale and the number of suboctaves per
-#' octave. If NULL, they are automatically computed.
-#' @param powerscales Logical. If TRUE (default), construct power 2 scales from
-#' \code{scales}. If \code{scales} is NULL, they are automatically computed.
+#' @param scales A vector containing the wavelet scales at wich the windowed scalograms
+#' are computed. This can be either a vector with all the scales or, following Torrence
+#' and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
+#' the number of suboctaves per octave. In the first case, \code{powerscales} must be
+#' \code{FALSE} if the given scales are not power 2 scales. In the second case,
+#' \code{powerscales} must be \code{TRUE} in order to construct power 2 scales using a
+#' base 2 logarithmic scale). If \code{scales} is NULL, they are automatically constructed.
+#' @param powerscales Logical. It must be TRUE (default) only in these cases:
+#' \itemize{
+#' \item If \code{scales} are power 2 scales, i.e. they use a base 2 logarithmic scale.
+#' \item If we want to construct power 2 scales automatically. In this case, \code{scales}
+#' must be \code{NULL}.
+#' \item If we want to construct power 2 scales from \code{scales}. In this case,
+#' \code{length(scales)} must be 3.
+#' }
+#' Otherwise, it must be \code{FALSE}.
 #' @param windowrad Integer. Time radius for the windows, measured in \code{dt}. By
 #' default, it is set to \eqn{ceiling(length(signal) / 20)}.
 #' @param delta_t Integer. Increment of time for the construction of windows central
@@ -82,6 +92,7 @@
 #' either "Scale" or "Period" depending on the value of \code{figureperiod} if
 #' \code{length(scales) > 1}, or "Windowed Scalogram" if \code{length(scales) == 1}.
 #' @param main A string giving a custom main title for the figure.
+#' @param zlim A vector of length 2 with the limits for the z-axis (the color bar).
 #'
 #' @return A list with the following fields:
 #' \itemize{
@@ -137,7 +148,8 @@ windowed_scalogram <-
            figureperiod = TRUE,
            xlab = "Time",
            ylab = NULL,
-           main = "Windowed Scalogram") {
+           main = "Windowed Scalogram",
+           zlim = NULL) {
 
   #  require(zoo)
   #  require(Matrix)
@@ -187,17 +199,17 @@ windowed_scalogram <-
       }
       scalesdt <- scales * dt
     } else {
-      ns <- length(scales)
-      if (powerscales && ns == 3) {
+      if (powerscales && length(scales) == 3) {
         scales <- pow2scales(scales)
       } else {
-        if (powerscales && ns != 3) {
-          warning("The length of scales is not 3. Powerscales set to FALSE.")
-          powerscales <- FALSE
-        }
         if (is.unsorted(scales)) {
           warning("Scales were not sorted.")
           scales <- sort(scales)
+        }
+        aux <- diff(log2(scales))
+        if (powerscales && ((max(aux) - min(aux)) / max(aux) > 0.05)) {
+          warning("Scales seem like they are not power 2 scales. Powerscales set to FALSE.")
+          powerscales <- FALSE
         }
       }
       scalesdt <- scales
@@ -321,7 +333,8 @@ windowed_scalogram <-
           coi = coi,
           Xname = xlab,
           Yname = ylab,
-          Zname = main
+          Zname = main,
+          zlim = zlim
         )
       } else {
         if (is.null(ylab)) ylab <- "Windowed Scalogram"
