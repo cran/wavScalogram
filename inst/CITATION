@@ -1,0 +1,16 @@
+## R package reference generated from DESCRIPTION metadata
+citation(auto = meta)
+
+## wavScalogram article
+bibentry(
+  bibtype  = "Article",
+  title    = "wavScalogram: an R package with scalogram wavelet tools for time series analysis",
+  author   = c(person(c("Vicente", "J."), "Bolós"), person("Rafael", "Benítez")),
+  journal  = "The R Journal",
+  year     = "2022",
+  volume   = "14",
+  number   = "2",
+  pages    = "164-185",
+  doi      = "10.32614/RJ-2022-031",
+  textVersion = "wavScalogram: an R package with scalogram wavelet tools for time series analysis. Vicente J. Bolos, Rafael Benitez. The R Journal, 14/2 (2022), 164-185."
+  )

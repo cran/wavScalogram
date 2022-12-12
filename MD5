@@ -1,4 +1,4 @@
-f5646915a821555bceece5400cb664dc *DESCRIPTION
+e9ae9c254e96e6329044d39ca3fb2449 *DESCRIPTION
 9c249f82e87843fca8dba1aef6c5e40e *NAMESPACE
 604bccc1666c761f0240885f68e7149b *R/cwt_wst.R
 ee593e16a93976f67016579db1e4a3ad *R/fourier_factor.R
@@ -10,14 +10,15 @@ acdefe0c3396ef99cc79f2ad913017d8 *R/wavelet_radius.R
 71c538202acacf7a52e14375bd2e66e1 *R/windowed_scale_index.R
 fb556f32665e006f5b745ac3affd5ccd *R/windowed_scalogram.R
 3295a14b01321baa064822d3010ee375 *R/wsd.R
+af5edead6c77040a72686cd8827e2d9d *inst/CITATION
 1118d05386da34faa33a5b0749b004c0 *man/core.Rd
 8a8fe2a5f10ce3f05a97c196ea6ef5ba *man/cwt_wst.Rd
 28f2e41b8330277b935d0e0e715143a9 *man/fourier_factor.Rd
 cce41d14cd64ebe8c76ea683c72c8f17 *man/pow2scales.Rd
 87a38704670717c1f7089ba3998825f0 *man/scale_index.Rd
 c0eb954568f3ef0d0296a2e9839ad392 *man/scalogram.Rd
-894ccf139399aa385a33829ab28a97da *man/wavPlot.Rd
+bf731150075555d755a0586004ee7876 *man/wavPlot.Rd
 8abdc7b69535787a2fa1bd99e7b873ee *man/wavelet_radius.Rd
 aa6c1664c913f2be598c256a0e235aa8 *man/windowed_scale_index.Rd
 1c44232be70b20d6744a7aa64983c414 *man/windowed_scalogram.Rd
-82fe52152f56a1ba732a1c464aa10bd6 *man/wsd.Rd
+68c4275c1f6ff845691631da06058c97 *man/wsd.Rd
