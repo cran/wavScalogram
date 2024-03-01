@@ -131,8 +131,6 @@
 #' values of the maximum scale at each time from which there are border effects.
 #' }
 #'
-#' @importFrom fields image.plot
-#' @importFrom colorRamps matlab.like
 #' @importFrom graphics abline
 #'
 #' @examples

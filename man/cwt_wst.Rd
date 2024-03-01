@@ -26,7 +26,7 @@ cwt_wst(signal,
 
 \item{dt}{Numeric. The time step of the signal.}
 
-\item{scales}{A vector containing the wavelet scales at wich the CWT
+\item{scales}{A vector containing the wavelet scales at which the CWT
 is computed. This can be either a vector with all the scales or, following Torrence
 and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
 the number of suboctaves per octave (in this case, \code{powerscales} must be TRUE in
@@ -54,7 +54,7 @@ of influence. If it is not specified, it is asumed to be \eqn{\sqrt{2}} for Morl
 
 \item{border_effects}{String, equal to "BE", "PER" or "SYM", which indicates how to
 manage the border effects which arise usually when a convolution is performed on
-finite-lenght signals.
+finite-length signals.
 \itemize{
 \item "BE": Padding time series with zeroes.
 \item "PER": Using boundary wavelets (periodization of the original time series).

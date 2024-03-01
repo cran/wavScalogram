@@ -29,7 +29,7 @@
 #'
 #' @param signal A vector containing the signal whose wavelet transform is wanted.
 #' @param dt Numeric. The time step of the signal.
-#' @param scales A vector containing the wavelet scales at wich the CWT
+#' @param scales A vector containing the wavelet scales at which the CWT
 #' is computed. This can be either a vector with all the scales or, following Torrence
 #' and Compo 1998, a vector of 3 elements with the minimum scale, the maximum scale and
 #' the number of suboctaves per octave (in this case, \code{powerscales} must be TRUE in
@@ -52,7 +52,7 @@
 #' \eqn{1/\sqrt{2}} for Paul and 0.5 for Haar.
 #' @param border_effects String, equal to "BE", "PER" or "SYM", which indicates how to
 #' manage the border effects which arise usually when a convolution is performed on
-#' finite-lenght signals.
+#' finite-length signals.
 #' \itemize{
 #' \item "BE": Padding time series with zeroes.
 #' \item "PER": Using boundary wavelets (periodization of the original time series).

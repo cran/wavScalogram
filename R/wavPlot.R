@@ -36,7 +36,6 @@
 #' @param Yname A string with the name of the y-axis.
 #' @param Zname A string with the name of the function.
 #'
-#' @importFrom colorRamps matlab.like
 #' @importFrom fields image.plot
 #' @importFrom grDevices colorRampPalette rgb
 #' @importFrom graphics axis contour image lines plot segments
@@ -85,7 +84,15 @@ wavPlot <-
     Y <- 1:Ylen
   }
 
-  COLORS <- matlab.like(50)
+  COLORS <- c("#0000AA",  "#000EB8", "#001CC6", "#002BD4", "#0039E3", "#0047F1",
+              "#0055FF", "#0063FF", "#0071FF", "#0080FF", "#008EFF",
+              "#009CFF",  "#00AAFF", "#0DB8FF", "#1BC6FF", "#28D4FF", "#36E3FF",
+              "#43F1FF", "#51FFFF", "#5EFFF2", "#6BFFE4", "#79FFD7",
+              "#86FFC9",  "#94FFBC", "#A1FFAE", "#AEFFA1", "#BCFF94", "#C9FF86",
+              "#D7FF79", "#E4FF6B", "#F2FF5E", "#FFFF51", "#FFF143",
+              "#FFE336",  "#FFD528", "#FFC61B", "#FFB80D", "#FFAA00", "#FF9C00",
+              "#FF8E00", "#FF8000", "#FF7100", "#FF6300", "#FF5500",
+              "#F14700",  "#E33900", "#D52B00", "#C61C00", "#B80E00", "#AA0000")
 
   if (Ylog) {
     YY <- log2(Y)
